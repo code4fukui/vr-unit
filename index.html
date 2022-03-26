@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>unit</title>
+	<script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+</head>
+<body>
+<script>"use strict";
+const putText = (pos, scale, s) => {
+  const obj = document.createElement("a-text");
+  obj.setAttribute("position", pos);
+  obj.setAttribute("scale", scale + " " + scale + " " + scale);
+  obj.setAttribute("align", "left");
+  obj.setAttribute("baseline", "bottom");
+  //obj.setAttribute("color", "#FFF");
+  obj.setAttribute("color", "#000");
+  obj.setAttribute("value", s);
+  scene.appendChild(obj);
+  return obj;
+};
+const putSquare = (pos, n) => {
+  const obj = document.createElement("a-box");
+  obj.setAttribute("position", pos);
+  obj.setAttribute("scale", n + " " + n + " " + n);
+  obj.setAttribute("color", "#FFF");
+  scene.appendChild(obj);
+  return obj;
+};
+
+AFRAME.registerComponent("main", {
+	init: () => {
+    const unit = [
+      { unit: "bit", yomi: "ビット" },
+      { unit: "byte", yomi: "バイト" },
+      { unit: "kbyte", yomi: "キロバイト" },
+      { unit: "Mbyte", yomi: "メガバイト" },
+      { unit: "Gbyte", yomi: "ギガバイト" },
+      { unit: "Tbyte", yomi: "テラバイト" },
+      { unit: "Pbyte", yomi: "ペタバイト" },
+      { unit: "Ebyte", yomi: "エクサバイト" },
+      { unit: "Zbyte", yomi: "ゼタバイト" },
+      { unit: "Ybyte", yomi: "ヨタバイト" },
+      { unit: "Rbyte", yomi: "ロナバイト" },
+      { unit: "Qbyte", yomi: "クエタバイト" },
+    ];
+    let x = 0;
+    // 0 標準, 2: エクサが見える, 7: クエタが見える
+    const nscale = parseInt(location.hash.substring(1) || 0);
+    //let n = 0.001; // 0.1mm
+    let n = 0.01 / Math.pow(10, nscale);
+    const y = 1.1;
+    for (let i = 0; i < unit.length; i++) {
+      const u = unit[i];
+      const scale = n > 1 ? n : 1;
+      const t = putText({ x: x - n, y, z: -1 }, scale / 2, "1" + u.unit);
+      putSquare({ x: x - n / 2, y: 1.2 + n / 2, z: -1 - n / 2 }, n);
+      console.log(n);
+      if (i == 0) {
+        n *= 2;
+      } else {
+        n *= 10;
+      }
+      x += .5 + n;
+    }
+  },
+});
+</script>
+<a-scene id=scene main>
+	<a-sky color="#777"></a-sky>
+	<a-entity id=handleft oculus-touch-controls="hand: left"></a-entity>
+	<a-entity id=handright oculus-touch-controls="hand: right"></a-entity>
+</a-scene>
+</body>
+</html>
